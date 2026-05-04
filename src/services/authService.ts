@@ -2,8 +2,6 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signInWithPopup,
-  signInWithRedirect,
-  getRedirectResult,
   GoogleAuthProvider,
   signOut,
 } from "firebase/auth";
@@ -17,13 +15,7 @@ export const registerUser = (email: string, password: string) =>
 export const loginUser = (email: string, password: string) =>
   signInWithEmailAndPassword(auth, email, password);
 
-export const loginWithGoogle = () => {
-  const isLocal = window.location.hostname === "localhost";
-  return isLocal
-    ? signInWithPopup(auth, googleProvider)
-    : signInWithRedirect(auth, googleProvider);
-};
-
-export const getGoogleRedirectResult = () => getRedirectResult(auth);
+export const loginWithGoogle = () =>
+  signInWithPopup(auth, googleProvider);
 
 export const logoutUser = () => signOut(auth);
