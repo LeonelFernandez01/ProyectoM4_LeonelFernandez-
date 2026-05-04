@@ -1,73 +1,54 @@
-# React + TypeScript + Vite
+# Gestor Estratégico de Tareas - PIM4
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+App SPA de gestión de tareas con autenticación, persistencia en la nube y notificaciones por email.
 
-Currently, two official plugins are available:
+## Stack
+- React + TypeScript
+- Firebase (Auth + Firestore)
+- AWS SES (emails via Vercel Functions)
+- Vercel (deploy)
+- Vitest + React Testing Library (testing)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Descripción
+Aplicación web para que empleados puedan gestionar tareas diarias de forma organizada, persistente y accesible desde cualquier dispositivo. Cada usuario solo puede ver sus propias tareas.
 
-## React Compiler
+## Decisiones arquitectónicas
+- BaaS con Firebase para evitar backend propio
+- Vercel Functions para el envío de emails sin exponer credenciales AWS en el frontend
+- Código organizado por capas: pages, components, services, hooks, types
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Instalación
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Variables de entorno
+Copiar `.env.example` a `.env` y completar:
+VITE_FIREBASE_API_KEY=
+VITE_FIREBASE_AUTH_DOMAIN=
+VITE_FIREBASE_PROJECT_ID=
+VITE_FIREBASE_STORAGE_BUCKET=
+VITE_FIREBASE_MESSAGING_SENDER_ID=
+VITE_FIREBASE_APP_ID=
+AWS_REGION=
+AWS_ACCESS_KEY_ID=
+AWS_SECRET_ACCESS_KEY=
+SES_FROM_EMAIL=
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## URL de producción
+https://proyecto-m4-leonel-fernandez-jn4h.vercel.app
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Flujo de envío de emails
+1. Usuario hace click en "Enviar resumen"
+2. Frontend llama a `/api/send-email` (Vercel Function)
+3. La función usa AWS SES con credenciales seguras del servidor
+4. SES envía el email al usuario autenticado
+
+## Tests
+```bash
+npm run test
 ```
+
+## Uso de IA
+Claude fue utilizado como asistente durante el desarrollo. Fue más efectivo para explicar conceptos nuevos, resolver errores de TypeScript y configurar servicios externos como Firebase y AWS SES. El patrón más útil fue describir el problema con contexto específico para obtener soluciones precisas.
