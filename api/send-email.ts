@@ -10,7 +10,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       port: 587,
       auth: {
         user: process.env.SES_SMTP_USER,
-        pass: process.env.SES_SMTP_PASS,
+        pass: process.env.SES_SMTP_PASSWORD,
       },
     });
     await transporter.sendMail({
