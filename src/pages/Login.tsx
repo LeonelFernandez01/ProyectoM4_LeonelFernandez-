@@ -2,6 +2,8 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { loginUser, loginWithGoogle } from "../services/authService";
+import { useEffect } from "react";
+import { getGoogleRedirectResult } from "../services/authService";
 //este componente muestra la página de inicio de sesión, este componente permite al usuario iniciar sesión con su email y contraseña o con Google, este componente también muestra un enlace para ir a la página de registro, este componente es utilizado en el archivo App.tsx para mostrar la página de inicio de sesión.
 export const Login = () => {
   const [email, setEmail] = useState("");
@@ -27,6 +29,11 @@ export const Login = () => {
       setError("Error al iniciar con Google");
     }
   };
+  useEffect(() => {
+  getGoogleRedirectResult().then((result) => {
+    if (result?.user) navigate("/tasks");
+  });
+}, []);
 //este componente muestra la página de inicio de sesión, este componente permite al usuario iniciar sesión con su email y contraseña o con Google, este componente también muestra un enlace para ir a la página de registro, este componente es utilizado en el archivo App.tsx para mostrar la página de inicio de sesión.
   return (
     <div style={{ maxWidth: 400, margin: "100px auto", padding: 24 }}>
