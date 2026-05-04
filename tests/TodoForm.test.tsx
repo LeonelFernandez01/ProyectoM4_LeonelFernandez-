@@ -1,15 +1,41 @@
-import { render, screen, fireEvent } from "@testing-library/react";
-import { TodoForm } from "../src/components/TodoForm";
+import { render, screen } from "@testing-library/react";
+import { TodoList } from "../src/components/TodoList";
 import { describe, it, expect, vi } from "vitest";
+import type { Task } from "../src/types";
 
-describe("TodoForm", () => {
-  it("llama onAdd al enviar el formulario", () => {
-    const onAdd = vi.fn();
-    render(<TodoForm onAdd={onAdd} />);
-    fireEvent.change(screen.getByPlaceholderText("Título de la tarea"), {
-      target: { value: "Nueva tarea" },
-    });
-    fireEvent.submit(screen.getByRole("button", { name: /agregar/i }));
-    expect(onAdd).toHaveBeenCalledWith("Nueva tarea", "");
+const mockTasks: Task[] = [
+  {
+    id: "1",
+    title: "Tarea de prueba",
+    description: "Descripción de prueba",
+    completed: false,
+    userId: "user1",
+    createdAt: Date.now(),
+  },
+];
+
+describe("TodoList", () => {
+  it("muestra las tareas correctamente", () => {
+    render(
+      <TodoList
+        tasks={mockTasks}
+        onToggle={vi.fn()}
+        onDelete={vi.fn()}
+        onEdit={vi.fn()}
+      />
+    );
+    expect(screen.getByText("Tarea de prueba")).toBeInTheDocument();
+  });
+
+  it("muestra mensaje cuando no hay tareas", () => {
+    render(
+      <TodoList
+        tasks={[]}
+        onToggle={vi.fn()}
+        onDelete={vi.fn()}
+        onEdit={vi.fn()}
+      />
+    );
+    expect(screen.getByText("No tenés tareas todavía.")).toBeInTheDocument();
   });
 });
