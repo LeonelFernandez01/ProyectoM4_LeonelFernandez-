@@ -1,52 +1,68 @@
-import { useState, useEffect } from "react";
-import type { Task } from "../types";
-import { createTask, updateTask, deleteTask } from "../services/taskService";
-import { collection, query, where, orderBy, onSnapshot } from "firebase/firestore";
-import { db } from "../services/firebase";
+import { useState } from "react";
+import { useAuth } from "../hooks/useAuth";
+import { useTasks } from "../hooks/useTasks";
+import { TodoForm } from "../components/TodoForm";
+import { TodoList } from "../components/TodoList";
+import { logoutUser } from "../services/authService";
+import { useNavigate } from "react-router-dom";
 
-export const useTasks = (userId: string | undefined) => {
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [loading, setLoading] = useState(true);
+export const Tasks = () => {
+  const { user } = useAuth();
+  const { tasks, loading, addTask, toggleTask, editTask, removeTask } = useTasks(user?.uid);
+  const navigate = useNavigate();
+  const [emailLoading, setEmailLoading] = useState(false);
+  const [emailStatus, setEmailStatus] = useState<"idle" | "success" | "error">("idle");
 
-  useEffect(() => {
-    if (!userId) return;
-
-    const q = query(
-      collection(db, "tasks"),
-      where("userId", "==", userId),
-      orderBy("createdAt", "desc")
-    );
-
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const data = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      } as Task));
-      setTasks(data);
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
-  }, [userId]);
-
-  const addTask = async (title: string, description: string) => {
-    await createTask({
-      title, description, completed: false,
-      userId: userId!, createdAt: Date.now()
-    });
+  const handleLogout = async () => {
+    await logoutUser();
+    navigate("/login");
   };
 
-  const toggleTask = async (task: Task) => {
-    await updateTask(task.id, { completed: !task.completed });
+  const handleSendEmail = async () => {
+    if (!user?.email) return;
+    if (tasks.length === 0) {
+      alert("No tenés tareas para enviar!");
+      return;
+    }
+    setEmailLoading(true);
+    setEmailStatus("idle");
+    const summary = tasks.map(t =>
+      `${t.completed ? "✅" : "⏳"} ${t.title}: ${t.description}`
+    ).join("\n");
+    try {
+      const res = await fetch("/api/send-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: user.email, summary }),
+      });
+      if (!res.ok) throw new Error("Error en el servidor");
+      setEmailStatus("success");
+      setTimeout(() => setEmailStatus("idle"), 3000);
+    } catch {
+      setEmailStatus("error");
+      setTimeout(() => setEmailStatus("idle"), 3000);
+    } finally {
+      setEmailLoading(false);
+    }
   };
 
-  const editTask = async (id: string, title: string, description: string) => {
-    await updateTask(id, { title, description });
-  };
-
-  const removeTask = async (id: string) => {
-    await deleteTask(id);
-  };
-
-  return { tasks, loading, addTask, toggleTask, editTask, removeTask };
+  return (
+    <div style={{ maxWidth: 600, margin: "40px auto", padding: 24 }}>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <h2>Mis Tareas</h2>
+        <div>
+          <button onClick={handleSendEmail} disabled={emailLoading} style={{ marginRight: 8 }}>
+            {emailLoading ? "Enviando..." : "📧 Enviar resumen"}
+          </button>
+          <button onClick={handleLogout}>Cerrar sesión</button>
+        </div>
+      </div>
+      {emailStatus === "success" && <p style={{ color: "green" }}>✅ Email enviado!</p>}
+      {emailStatus === "error" && <p style={{ color: "red" }}>❌ Error al enviar!</p>}
+      <TodoForm onAdd={addTask} />
+      {loading ? <p>Cargando...</p> : (
+        <TodoList tasks={tasks} onToggle={toggleTask} onDelete={removeTask} onEdit={editTask} />
+      )}
+    </div>
+  );
 };
