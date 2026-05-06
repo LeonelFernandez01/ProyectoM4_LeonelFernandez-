@@ -50,5 +50,26 @@ https://proyecto-m4-leonel-fernandez-jn4h.vercel.app
 npm run test
 ```
 
-## Uso de IA
-Claude fue utilizado como asistente durante el desarrollo. Fue más efectivo para explicar conceptos nuevos, resolver errores de TypeScript y configurar servicios externos como Firebase y AWS SES. El patrón más útil fue describir el problema con contexto específico para obtener soluciones precisas.
+## Uso Crítico y Responsable de IA
+
+### Cómo integré la IA en el proceso
+Utilicé Claude (Anthropic) como asistente durante todo el desarrollo del proyecto.
+
+### Situaciones donde fue más efectiva
+- **Resolución de errores**: Cuando aparecían errores de TypeScript o de configuración, 
+  describía el error exacto y el contexto, obteniendo soluciones precisas.
+- **Configuración de servicios externos**: Firebase, AWS SES y Vercel Functions 
+  tienen mucha configuración. La IA ayudó a entender cada paso.
+- **Explicación de conceptos**: Antes de implementar algo nuevo (onSnapshot, 
+  Vercel Functions, Firestore Rules) pedía explicación del concepto primero.
+
+### Patrones y buenas prácticas descubiertas
+- **Pedir explicación antes del código**: Entender qué hace algo antes de pegarlo.
+- **Compartir el error completo**: Copiar el error exacto de la consola da mejores respuestas.
+- **Validar el código generado**: Todo el código fue revisado y comprendido antes de usarlo.
+- **Iterar con contexto**: Mantener la conversación con contexto previo mejora las respuestas.
+
+### Decisiones técnicas tomadas con apoyo de IA
+- Usar `onSnapshot` en vez de `getDocs` para tiempo real
+- Separar la lógica en hooks (`useAuth`, `useTasks`) para mejor organización
+- Invocar AWS SES desde Vercel Functions para no exponer credenciales
