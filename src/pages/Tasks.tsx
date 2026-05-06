@@ -46,22 +46,26 @@ export const Tasks = () => {
     }
   };
 
-  return (
-    <div style={{ maxWidth: 600, margin: "40px auto", padding: 24 }}>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <h2>Mis Tareas</h2>
-        <div>
-          <button onClick={handleSendEmail} disabled={emailLoading} style={{ marginRight: 8 }}>
-            {emailLoading ? "Enviando..." : "📧 Enviar resumen"}
+ return (
+    <div className="tasks-container">
+      <div className="tasks-header">
+        <h2 className="tasks-title">Mis Tareas</h2>
+        <div className="tasks-actions">
+          <button onClick={handleSendEmail} disabled={emailLoading}
+            className="btn btn-secondary btn-sm">
+            {emailLoading ? "Enviando..." : "📧 Resumen"}
           </button>
-          <button onClick={handleLogout}>Cerrar sesión</button>
+          <button onClick={handleLogout} className="btn btn-primary btn-sm">
+            Cerrar sesión
+          </button>
         </div>
       </div>
-      {emailStatus === "success" && <p style={{ color: "green" }}>✅ Email enviado!</p>}
-      {emailStatus === "error" && <p style={{ color: "red" }}>❌ Error al enviar!</p>}
+      {emailStatus === "success" && <div className="alert alert-success">✅ Email enviado!</div>}
+      {emailStatus === "error" && <div className="alert alert-error">❌ Error al enviar!</div>}
       <TodoForm onAdd={addTask} />
       {loading ? <p>Cargando...</p> : (
-        <TodoList tasks={tasks} onToggle={toggleTask} onDelete={removeTask} onEdit={editTask} />
+        <TodoList tasks={tasks} onToggle={toggleTask}
+          onDelete={removeTask} onEdit={editTask} />
       )}
     </div>
   );
