@@ -1,3 +1,4 @@
+import "@testing-library/jest-dom/vitest";
 import { render, screen } from "@testing-library/react";
 import { TodoList } from "../src/components/TodoList";
 import { describe, it, expect, vi } from "vitest";
@@ -36,6 +37,6 @@ describe("TodoList", () => {
         onEdit={vi.fn()}
       />
     );
-    expect(screen.getByText("No tenés tareas todavía.")).toBeInTheDocument();
+    expect(screen.getByText(/No tenés tareas todavía/i)).toBeInTheDocument();
   });
 });

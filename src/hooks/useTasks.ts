@@ -29,10 +29,22 @@ export const useTasks = (userId: string | undefined) => {
     return () => unsubscribe();
   }, [userId]);
 
-  const addTask = async (title: string, description: string) => {
+  const addTask = async (
+    title: string,
+    description: string,
+    priority?: 'low' | 'medium' | 'high',
+    category?: string,
+    dueDate?: string
+  ) => {
     await createTask({
-      title, description, completed: false,
-      userId: userId!, createdAt: Date.now()
+      title,
+      description,
+      completed: false,
+      userId: userId!,
+      createdAt: Date.now(),
+      priority,
+      category,
+      dueDate
     });
   };
 
@@ -40,8 +52,15 @@ export const useTasks = (userId: string | undefined) => {
     await updateTask(task.id, { completed: !task.completed });
   };
 
-  const editTask = async (id: string, title: string, description: string) => {
-    await updateTask(id, { title, description });
+  const editTask = async (
+    id: string,
+    title: string,
+    description: string,
+    priority?: 'low' | 'medium' | 'high',
+    category?: string,
+    dueDate?: string
+  ) => {
+    await updateTask(id, { title, description, priority, category, dueDate });
   };
 
   const removeTask = async (id: string) => {

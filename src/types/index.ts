@@ -6,6 +6,9 @@ export interface Task {
   completed: boolean;
   userId: string;
   createdAt: number;
+  priority?: 'low' | 'medium' | 'high';
+  category?: string;
+  dueDate?: string;
 }
 //esto sirve para definir el tipo de dato que se va a usar en el proyecto, en este caso se define el tipo de dato Task y User, esto es importante para evitar errores de tipo y para tener una mejor organización del código.
 export interface User {

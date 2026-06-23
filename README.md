@@ -10,12 +10,21 @@ App SPA de gestión de tareas con autenticación, persistencia en la nube y noti
 - Vitest + React Testing Library (testing)
 
 ## Descripción
-Aplicación web para que empleados puedan gestionar tareas diarias de forma organizada, persistente y accesible desde cualquier dispositivo. Cada usuario solo puede ver sus propias tareas.
+Aplicación web premium para que empleados puedan gestionar tareas diarias de forma organizada, interactiva y accesible. Cada usuario dispone de un espacio privado de tareas con las siguientes funcionalidades mejoradas:
+- **Estética Premium con Glassmorphism**: Diseño de cristal refinado, sombras sutiles y micro-animaciones en interacciones de usuario (hover, click, check).
+- **Tema Dual Persistente (Modo Claro/Oscuro)**: Interruptor en cabecera con persistencia en `localStorage` y detección del tema del sistema operativo.
+- **Dashboard de Estadísticas**: Panel interactivo superior con contadores en tiempo real (Totales, Pendientes, Completadas) y un anillo de progreso animado SVG.
+- **Sistema de Prioridades y Categorización**: Clasificación de tareas en prioridades Alta 🔴, Media 🟡 y Baja 🔵, con etiquetas/categorías personalizadas.
+- **Fechas de Vencimiento**: Configuración de fecha límite con badges que alertan si la tarea está vencida o vence hoy.
+- **Buscador y Filtros Avanzados**: Barra de búsqueda por texto y dropdowns para filtrar por estado/prioridad y ordenar según prioridad, vencimiento o fecha de creación.
+- **Correos Detallados**: Envío de resumen formateado con metadatos (prioridad, etiquetas, plazos) a través de AWS SES.
 
 ## Decisiones arquitectónicas
-- BaaS con Firebase para evitar backend propio
-- Vercel Functions para el envío de emails sin exponer credenciales AWS en el frontend
-- Código organizado por capas: pages, components, services, hooks, types
+- **BaaS con Firebase**: Autenticación y Firestore en tiempo real (`onSnapshot`) para evitar backend propio.
+- **Vercel Functions**: Envío seguro de correos usando `nodemailer` con credenciales de AWS SES en el servidor.
+- **Esquema de Datos Extensible**: Inclusión de campos opcionales (`priority`, `category`, `dueDate`) en la interfaz `Task`, garantizando total compatibilidad con tareas previas.
+- **Estilización nativa y Modular**: Utilización de Vanilla CSS con variables CSS dinámicas para manejar el cambio de tema de manera eficiente sin dependencias externas.
+- **Arquitectura Limpia**: Separación en capas: pages, components, services, hooks, types y utils.
 
 ## Instalación
 ```bash

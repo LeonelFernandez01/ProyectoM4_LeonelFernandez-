@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { loginUser, loginWithGoogle } from "../services/authService";
 
@@ -8,12 +8,25 @@ export const Login = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
+  // Cargar el tema guardado en localstorage para coherencia visual
+  useEffect(() => {
+    const saved = localStorage.getItem("theme");
+    const themeToApply = saved === "light" || saved === "dark" 
+      ? saved 
+      : (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", themeToApply);
+  }, []);
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!email.trim() || !password.trim()) {
+      setError("Por favor completa todos los campos");
+      return;
+    }
     try {
       await loginUser(email, password);
       navigate("/tasks");
-    } catch {
+    } catch (err) {
       setError("Email o contraseña incorrectos");
     }
   };
@@ -22,7 +35,7 @@ export const Login = () => {
     try {
       await loginWithGoogle();
       navigate("/tasks");
-    } catch {
+    } catch (err) {
       setError("Error al iniciar con Google");
     }
   };
@@ -30,21 +43,58 @@ export const Login = () => {
   return (
     <div className="auth-container">
       <div className="auth-card">
-        <h2 className="auth-title">Bienvenido</h2>
-        <p className="auth-subtitle">Iniciá sesión para ver tus tareas</p>
-        {error && <div className="alert alert-error">{error}</div>}
+        <div className="auth-header">
+          <div className="auth-logo">Gestor Estratégico</div>
+          <h2 className="auth-title">¡Bienvenido de nuevo!</h2>
+          <p className="auth-subtitle">Inicia sesión para gestionar tus tareas diarias</p>
+        </div>
+
+        {error && (
+          <div className="alert alert-error">
+            <span>⚠️</span> {error}
+          </div>
+        )}
+
         <form onSubmit={handleLogin}>
-          <input className="input" placeholder="Email" value={email}
-            onChange={e => setEmail(e.target.value)} />
-          <input className="input" placeholder="Contraseña" type="password"
-            value={password} onChange={e => setPassword(e.target.value)} />
-          <button type="submit" className="btn btn-primary">Entrar</button>
+          <div className="input-group">
+            <label className="input-label">Correo Electrónico</label>
+            <input
+              type="email"
+              className="input"
+              placeholder="correo@ejemplo.com"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="input-group">
+            <label className="input-label">Contraseña</label>
+            <input
+              className="input"
+              placeholder="••••••••"
+              type="password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              required
+            />
+          </div>
+
+          <button type="submit" className="btn btn-primary" style={{ marginTop: 8 }}>
+            Entrar
+          </button>
         </form>
-        <button onClick={handleGoogle} className="btn btn-secondary">
-          Entrar con Google
-        </button>
+
+        <div className="auth-divider">o continuar con</div>
+
+        <div className="auth-social">
+          <button onClick={handleGoogle} className="btn btn-secondary">
+            <span>🌐</span> Iniciar con Google
+          </button>
+        </div>
+
         <div className="auth-link">
-          ¿No tenés cuenta? <Link to="/register">Registrate</Link>
+          ¿No tienes una cuenta? <Link to="/register">Regístrate gratis</Link>
         </div>
       </div>
     </div>
