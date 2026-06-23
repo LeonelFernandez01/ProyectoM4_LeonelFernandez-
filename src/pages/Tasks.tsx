@@ -5,6 +5,7 @@ import { TodoForm } from "../components/TodoForm";
 import { TodoList } from "../components/TodoList";
 import { logoutUser } from "../services/authService";
 import { useNavigate } from "react-router-dom";
+import logo from "../assets/logo.svg";
 
 export const Tasks = () => {
   const { user } = useAuth();
@@ -140,7 +141,10 @@ export const Tasks = () => {
     <div className="app-container">
       {/* NAVBAR STICKY */}
       <nav className="tasks-navbar">
-        <h1 className="nav-logo">Gestor Estratégico</h1>
+        <div className="nav-logo-wrapper">
+          <img src={logo} alt="Logo" className="logo-img" />
+          <h1 className="nav-logo">Gestor Estratégico</h1>
+        </div>
         <div className="nav-actions">
           {user?.email && (
             <span className="user-info">

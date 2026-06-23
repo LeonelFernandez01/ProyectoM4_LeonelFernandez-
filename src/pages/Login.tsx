@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { loginUser, loginWithGoogle } from "../services/authService";
+import logo from "../assets/logo.svg";
 
 export const Login = () => {
   const [email, setEmail] = useState("");
@@ -44,7 +45,10 @@ export const Login = () => {
     <div className="auth-container">
       <div className="auth-card">
         <div className="auth-header">
-          <div className="auth-logo">Gestor Estratégico</div>
+          <div className="auth-logo-wrapper">
+            <img src={logo} alt="Logo" className="logo-img" />
+            <div className="auth-logo">Gestor Estratégico</div>
+          </div>
           <h2 className="auth-title">¡Bienvenido de nuevo!</h2>
           <p className="auth-subtitle">Inicia sesión para gestionar tus tareas diarias</p>
         </div>
